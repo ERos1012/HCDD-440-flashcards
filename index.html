@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flashcard System</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="flashcard-container">
+      <div id="flashcard-display">
+        <!-- Flashcards will be dynamically displayed here -->
+      </div>
+    </div>
+
+    <!-- Counter for card navigation -->
+    <div class="counter">
+      <p id="counter-text">Card 0 of 0</p>
+    </div>
+
+    <div class="navigation-buttons">
+      <button id="prev-btn">Previous Card</button>
+      <button id="next-btn">Next Card</button>
+    </div>
+
+<!-- Flashcard Creation Form -->
+<div class="flashcard-form">
+    <h3>Add a Flashcard</h3>
+    <label for="front-text">Front Text:</label>
+    <input type="text" id="front-text" placeholder="Enter question" />
+    <br /><br />
+  
+    <label for="back-text">Back Text:</label>
+    <input type="text" id="back-text" placeholder="Enter answer" />
+    <br /><br />
+  
+    <!-- New container for the button and loading status -->
+    <div class="button-loading-container">
+      <button id="add-card-btn">Add Flashcard</button>
+      <div id="loading-status" style="display: none;">Generating image...</div>
+    </div>
+  
+    <!-- Image will be fetched automatically -->
+    <div id="loading-container"></div>
+  </div>
+  
+
+    <!-- Placeholder for showing generated image link or error -->
+    <div id="image-status"></div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
