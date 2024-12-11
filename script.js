@@ -3,16 +3,16 @@ let currentIndex = 0;
 
 // Add Flashcard Button Event Listener
 document.getElementById('add-card-btn').addEventListener('click', async function () {
-    const frontText = document.getElementById('front-text').value;
-    const backText = document.getElementById('back-text').value;
+    const term = document.getElementById('term').value; // Updated ID
+    const definition = document.getElementById('definition').value; // Updated ID
 
-    if (frontText && backText) {
+    if (term && definition) {
         try {
             showLoading(true); // Show loading status
-            const backImage = await generateAIImage(backText); // Get the AI image
-            addFlashcard(frontText, backText, backImage);
+            const frontImage = await generateAIImage(term); // Generate image based on the term
+            addFlashcard(term, definition, frontImage);
             clearForm();
-            showFlashcard(currentIndex); // Show the first card after adding
+            showFlashcard(currentIndex); // Display the current card
             updateCounter();
         } catch (error) {
             console.error('Failed to generate AI image:', error);
@@ -21,7 +21,7 @@ document.getElementById('add-card-btn').addEventListener('click', async function
             showLoading(false); // Hide loading status
         }
     } else {
-        alert('Please fill in both front and back text.');
+        alert('Please fill in both term and definition.');
     }
 });
 
@@ -54,22 +54,27 @@ async function generateAIImage(text) {
 }
 
 // Add Flashcard to the list
-function addFlashcard(frontText, backText, backImage) {
+function addFlashcard(term, definition, frontImage) {
     const flashcard = {
-        frontText: frontText,
-        backText: backText,
-        backImage: backImage
+        term: term, // Updated property names for clarity
+        definition: definition,
+        frontImage: frontImage, // Store generated image for the front
     };
     flashcards.push(flashcard);
 }
 
 // Clear form fields
 function clearForm() {
-    document.getElementById('front-text').value = '';
-    document.getElementById('back-text').value = '';
+    document.getElementById('term').value = ''; // Updated ID
+    document.getElementById('definition').value = ''; // Updated ID
 }
 
-// Show flashcard based on index
+document.getElementById('card-mode').addEventListener('change', function () {
+    showFlashcard(currentIndex);
+});
+
+
+// Show flashcard based on index and mode
 function showFlashcard(index) {
     const flashcardDisplay = document.getElementById('flashcard-display');
     flashcardDisplay.innerHTML = ''; // Clear current display
@@ -78,37 +83,55 @@ function showFlashcard(index) {
         const card = flashcards[index];
         const flashcard = document.createElement('div');
         flashcard.classList.add('flashcard');
-        
+
+        // Get the current display mode from the dropdown
+        const mode = document.getElementById('card-mode').value;
+
         const front = document.createElement('div');
         front.classList.add('front');
-        front.innerHTML = `<p>${card.frontText}</p>`;
-        
         const back = document.createElement('div');
         back.classList.add('back');
-        back.innerHTML = `<p>${card.backText}</p>`;
-        if (card.backImage) {
-            const img = document.createElement('img');
-            img.src = card.backImage;
-            img.alt = 'Generated Image';
-            back.appendChild(img);
+
+        // Logic to show content based on selected mode
+        if (mode === 'term') {
+            // Term on the front, definition on the back
+            front.innerHTML = `<p>${card.term}</p>`;
+            if (card.frontImage) {
+                const img = document.createElement('img');
+                img.src = card.frontImage;
+                img.alt = 'Generated Image';
+                front.appendChild(img);
+            }
+            back.innerHTML = `<p>${card.definition}</p>`;
+        } else if (mode === 'definition') {
+            // Definition on the front, term and image on the back
+            front.innerHTML = `<p>${card.definition}</p>`;
+            back.innerHTML = `<p>${card.term}</p>`;
+            if (card.frontImage) {
+                const img = document.createElement('img');
+                img.src = card.frontImage;
+                img.alt = 'Generated Image';
+                back.appendChild(img);
+            }
         }
 
-        // Append front and back to flashcard
+        // Add front and back to the flashcard
         flashcard.appendChild(front);
         flashcard.appendChild(back);
 
         // Add flip functionality
-        flashcard.addEventListener('click', function() {
+        flashcard.addEventListener('click', function () {
             flashcard.classList.toggle('flipped');
         });
 
-        // Show the new flashcard
+        // Display the flashcard
         flashcardDisplay.appendChild(flashcard);
     }
 }
 
+
 // Next and Previous button functionality
-document.getElementById('next-btn').addEventListener('click', function() {
+document.getElementById('next-btn').addEventListener('click', function () {
     if (currentIndex < flashcards.length - 1) {
         currentIndex++;
         showFlashcard(currentIndex);
@@ -118,7 +141,7 @@ document.getElementById('next-btn').addEventListener('click', function() {
     }
 });
 
-document.getElementById('prev-btn').addEventListener('click', function() {
+document.getElementById('prev-btn').addEventListener('click', function () {
     if (currentIndex > 0) {
         currentIndex--;
         showFlashcard(currentIndex);

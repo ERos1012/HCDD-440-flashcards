@@ -44,6 +44,10 @@ body {
 
 .flashcard .front {
     background-color: #ffffff;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .flashcard .back {
@@ -56,6 +60,10 @@ body {
 }
 
 .flashcard .back p {
+    margin: 0;
+}
+
+.flashcard .front p {
     margin: 0;
 }
 
